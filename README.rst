@@ -1,7 +1,8 @@
 ===========
 freqPattMin
 ===========
- .. image:: https://coveralls.io/repos/github/xinbian/freqPattMin/badge.svg?branch=master
+
+.. image:: https://coveralls.io/repos/github/xinbian/freqPattMin/badge.svg?branch=master
 	:target: https://coveralls.io/github/xinbian/freqPattMin?branch=master
 
 .. image:: https://img.shields.io/pypi/v/freqpattmin.svg
