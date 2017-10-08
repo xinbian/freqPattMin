@@ -59,10 +59,10 @@ class Apriori:
         for attrib in Apriori.dataCol:
            c1[attrib] = {k: v for k , v in c1[attrib].items() if v >= self.minSup}
         return c1
-ap = Apriori(adData, 2, 2)
-c1 = ap.c1Gen()
-
-l1= ap.prune()
+#ap = Apriori(adData, 2, 2)
+#c1 = ap.c1Gen()
+#
+#l1= ap.prune()
         
 
 
