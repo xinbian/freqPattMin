@@ -55,14 +55,15 @@ class Apriori:
                 flag += 1 #flag move forward
         return c1
     def prune(self):
-        self.c1Gen()
+        c1 = self.c1Gen()
         for attrib in Apriori.dataCol:
            c1[attrib] = {k: v for k , v in c1[attrib].items() if v >= self.minSup}
+         #to save memoery use c1 denotes l1 here
         return c1
-#ap = Apriori(adData, 2, 2)
-#c1 = ap.c1Gen()
+ap = Apriori(adData, 2, 2)
+c1 = ap.c1Gen()
 #
-#l1= ap.prune()
+l1= ap.prune()
         
 
 
