@@ -93,26 +93,45 @@ class Apriori:
         #scan data row by row
         k = 2
         for data in self.data:
-            #recover key
+            #genereate candidate ck set keys
             for key in ckp1.keys():
+                #gnerate the sub-dict keys corresponding to ck keys
                 for valueSub in ckp1[key].keys():
                     temp = 0
-                    for i in xrange(k):
+                    #since I store the n-itemset patterns in one key, sperated by '&'
+                    #I need to split the patterns here, and count them by comaring with dataset
+                    for i in range(k):
                         keysub = key.split('&')[i]
                         #find index in the orignial data list
                         dataIndex = Apriori.dataCol.index(keysub)
-                        tempi = valueSub.split('&')[i]
-                        #if find simutaneously, 
+                        tempi = valueSub.split('&')[i]                   
                         if data[dataIndex] == tempi:
                             temp = temp + 1
+                    #for length n pattern, this temp equals n meaning the pattern appear once
                     if temp == k:                      
-                        ckp1[key][valueSub] += 1
-      
-        
+                        ckp1[key][valueSub] += 1    
+        #prune ck
         ckp1 = self.prune(ckp1)
          
         return ckp1
-                        
+    #check subset 
+    def aprioriCk(self, ck, lkm1):
+        k = 2
+        for key in ck.keys():
+            for valueSub in ck[key].keys():
+                #check all subsets
+                for i in range(k):
+                    tempSubSet = valueSub.split('&')
+                    tempSubSet.pop(i)
+                    subset = '&'.join(tempSubSet)
+                    #if subset not in l_{k-1}, we delete this candidate
+                    if not (subset in lkm1[key].keys()):
+                        del ck[key][valueSub]
+                        #end loop check next candidate
+                        break
+                
+                
+        
                 
             
         
