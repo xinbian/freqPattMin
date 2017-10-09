@@ -1,0 +1,6 @@
+[run]
+source = freqpattmin
+[report]
+include = freqpattmin/*
+show_missing = True
+
