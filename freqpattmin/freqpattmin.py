@@ -91,19 +91,24 @@ class Apriori:
         return ckp1
     def count(self, ckp1):
         #scan data row by row
+        k = 2
         for data in self.data:
             #recover key
             for key in ckp1.keys():
-                key1 = key.split('&')[0]
-                key2 = key.split('&')[1]
-                #find index in the list
-                i = Apriori.dataCol.index(key1)
-                j = Apriori.dataCol.index(key2)
                 for valueSub in ckp1[key].keys():
-                    tempi = valueSub.split('&')[0]
-                    tempj = valueSub.split('&')[1]
-                    if data[i] == tempi and data[j] == tempj:
-                         ckp1[key][valueSub] += 1
+                    temp = 0
+                    for i in xrange(k):
+                        keysub = key.split('&')[i]
+                        #find index in the orignial data list
+                        dataIndex = Apriori.dataCol.index(keysub)
+                        tempi = valueSub.split('&')[i]
+                        #if find simutaneously, 
+                        if data[dataIndex] == tempi:
+                            temp = temp + 1
+                    if temp == k:                      
+                        ckp1[key][valueSub] += 1
+      
+        
         ckp1 = self.prune(ckp1)
          
         return ckp1
