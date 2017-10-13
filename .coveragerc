@@ -1,5 +1,5 @@
 [run]
-source = freqpattmin
+source = freqPattMin
 [report]
 include = freqpattmin/*
 show_missing = True

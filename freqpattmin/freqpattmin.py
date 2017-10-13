@@ -69,7 +69,7 @@ class Apriori:
          #to save memoery use c1 denotes l1 here
       
         return l1
-    #from l_k generate c_k+1
+    #from l1 generate c2
     def selfJoin(self,lk):
         ckp1 = {}
         for key1 in Apriori.dataCol:
@@ -89,6 +89,34 @@ class Apriori:
         #remove empty sub dictionary
         ckp1 = {k: v for k , v in ckp1.items() if v != {} }
         return ckp1
+    
+    
+    #from l_k generate c_k+1
+    def selfJoin2(self,lk):
+        ckp1 = {}
+        #sort lk based on keys
+        lk = sorted(lk.items(), key=lambda s: s[0])
+        #lk is tumple now
+        for i in range(len(l2)):
+            #start from i+1 to avoid duplicates
+            for j in range(i+1, len(l2)):
+                #break 'merged keys'
+                key1 = lk[i][0].split('&')
+                key2 = lk[j][0].split('&')
+                #lk ^ lk
+                if (key1[0:len(key1)-1] == key2[0:len(key1)-1]):
+                    #consider there might be several candidates 
+                    for keySub1 in lk[i][1].keys():
+                        for keySub2 in lk[j][1].keys():        
+                            if lk[i][0]+'&'+key2[-1] in ckp1.keys():
+                                ckp1[lk[i][0]+'&'+key2[-1]].update({keySub1+'&'+keySub2.split('&')[-1]:0})
+                            else:   
+                                ckp1[lk[i][0]+'&'+key2[-1]]={keySub1+'&'+keySub2.split('&')[-1]:0}
+        #remove empty sub dictionary
+        ckp1 = {k: v for k , v in ckp1.items() if v != {} }
+        return ckp1
+    
+    
     def count(self, ckp1):
         #scan data row by row
         k = 2
@@ -99,7 +127,7 @@ class Apriori:
                 for valueSub in ckp1[key].keys():
                     temp = 0
                     #since I store the n-itemset patterns in one key, sperated by '&'
-                    #I need to split the patterns here, and count them by comaring with dataset
+                    #need to split the patterns here, and count them by comaring with dataset
                     for i in range(k):
                         keysub = key.split('&')[i]
                         #find index in the orignial data list
@@ -123,12 +151,21 @@ class Apriori:
                 for i in range(k):
                     tempSubSet = valueSub.split('&')
                     tempSubSet.pop(i)
-                    subset = '&'.join(tempSubSet)
+                    subset = set(tempSubSet)
                     #if subset not in l_{k-1}, we delete this candidate
-                    if not (subset in lkm1[key].keys()):
+                    temp = []
+                    #generate set for l_k-1 keys 
+                    for lkm1SubKey in lkm1.keys():
+                        temp.append(set(lkm1SubKey.split('&')))
+                    if not (subset in temp):
                         del ck[key][valueSub]
                         #end loop check next candidate
                         break
+                    #check next level
+                    #check l_k-1[key].keys()
+                    else:
+                        for lkm1SubSubKey in lkm1.values():
+                            lkm1SubSubKey.keys().split('&')
                 
                 
         
@@ -143,6 +180,8 @@ l1 =ap.prune(c1)
 
 c2=ap.selfJoin(l1)
 l2=ap.count(c2)
-        
+      
+
+l3=ap.selfJoin2(l2)
 
 
