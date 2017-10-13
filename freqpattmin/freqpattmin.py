@@ -43,49 +43,38 @@ class Apriori:
     #c1 and l1 generation
     def c1Gen(self):
         #store c1 in a dictionary
-        #count as value, data attibutes as key
+        #count as dict's value, data attibutes and value combination as key
+        #for example{age:50 : 1} denotes age = 50, and count 1 
         c1 = {}
         for attrib in Apriori.dataCol:
             c1[attrib] = {}
         for tran in self.data: #loop over all tranctions
             flag = 0 #mark colomun position
-            for item in tran: #loop over all items in a transaction
-                key1 = Apriori.dataCol[flag]
-                if item in c1[key1].keys():
-                    c1[key1][item] += 1
+            for item in tran: #loop over all attributes in a transaction
+                #key = attibutes + value
+                keyCmb = Apriori.dataCol[flag]+':'+item
+                if keyCmb in c1.keys():
+                    c1[keyCmb] += 1
                 else:
-                    c1[key1].update({item: 1})
+                    c1[keyCmb] = 1
                 flag += 1 #flag move forward
         return c1
-    #prune c1 generate l1
-    def prune(self, c1):
-        l1 = {}
-        for attrib in c1.keys():
-           l1[attrib] = {k: v for k , v in c1[attrib].items() if v >= self.minSup}
-
-        #remove empty sub dictionary
-        l1 = {k: v for k , v in l1.items() if v != {} }
-       
-         #to save memoery use c1 denotes l1 here
-      
+    
+    #prune fucntion, generate l1 from c1
+    def prune(self, c1):   
+        # check minSup
+        l1 = {k: v for k , v in c1.items() if v >= self.minSup}
+        #remove empty dictionary
+        l1 = {k: v for k , v in l1.items() if v != {} }       
         return l1
+    
     #from l1 generate c2
     def selfJoin(self,lk):
         ckp1 = {}
-        for key1 in Apriori.dataCol:
-            for key2 in Apriori.dataCol:
-                if key1 != key2:                  
-                    ckp1[max(key1, key2) +'&' + min(key1, key2)] = {}
         for key1 in lk.keys():
             for key2 in lk.keys():
-                if key1 != key2:
-                    # next level in the dic
-                    for key1Sub in lk[key1].keys():
-                        for key2Sub in lk[key2].keys():
-                            if key1 > key2:           
-                                ckp1[key1 +'&'+ key2].update({key1Sub + '&' + key2Sub: 0})
-                            else:
-                                ckp1[key2 +'&'+ key1].update({key2Sub + '&' + key1Sub: 0})
+                if key1 != key2 and key1.split(':')[0] != key2.split(':')[0]:                  
+                    ckp1[max(key1, key2) +'&' + min(key1, key2)] = 0             
         #remove empty sub dictionary
         ckp1 = {k: v for k , v in ckp1.items() if v != {} }
         return ckp1
@@ -96,92 +85,108 @@ class Apriori:
         ckp1 = {}
         #sort lk based on keys
         lk = sorted(lk.items(), key=lambda s: s[0])
-        #lk is tumple now
-        for i in range(len(l2)):
+        #lk is tuple now
+        for i in range(len(lk)):
             #start from i+1 to avoid duplicates
-            for j in range(i+1, len(l2)):
+            for j in range(i+1, len(lk)):
                 #break 'merged keys'
-                key1 = lk[i][0].split('&')
-                key2 = lk[j][0].split('&')
+                key1 = sorted(lk[i][0].split('&'))
+                key2 = sorted(lk[j][0].split('&'))
                 #lk ^ lk
-                if (key1[0:len(key1)-1] == key2[0:len(key1)-1]):
-                    #consider there might be several candidates 
-                    for keySub1 in lk[i][1].keys():
-                        for keySub2 in lk[j][1].keys():        
-                            if lk[i][0]+'&'+key2[-1] in ckp1.keys():
-                                ckp1[lk[i][0]+'&'+key2[-1]].update({keySub1+'&'+keySub2.split('&')[-1]:0})
-                            else:   
-                                ckp1[lk[i][0]+'&'+key2[-1]]={keySub1+'&'+keySub2.split('&')[-1]:0}
-        #remove empty sub dictionary
+                if (key1[0:len(key1)-1] == key2[0:len(key1)-1] and key1[-1].split(':')[0]
+                != key2[-1].split(':')[0]):  
+                    ckp1[lk[i][0]+'&'+key2[-1]]=0
+        #remove empty sub dictionary and restore ckp1 to dictionary
         ckp1 = {k: v for k , v in ckp1.items() if v != {} }
         return ckp1
     
     
     def count(self, ckp1):
         #scan data row by row
-        k = 2
         for data in self.data:
             #genereate candidate ck set keys
-            for key in ckp1.keys():
-                #gnerate the sub-dict keys corresponding to ck keys
-                for valueSub in ckp1[key].keys():
-                    temp = 0
-                    #since I store the n-itemset patterns in one key, sperated by '&'
-                    #need to split the patterns here, and count them by comaring with dataset
-                    for i in range(k):
-                        keysub = key.split('&')[i]
-                        #find index in the orignial data list
-                        dataIndex = Apriori.dataCol.index(keysub)
-                        tempi = valueSub.split('&')[i]                   
-                        if data[dataIndex] == tempi:
-                            temp = temp + 1
-                    #for length n pattern, this temp equals n meaning the pattern appear once
-                    if temp == k:                      
-                        ckp1[key][valueSub] += 1    
+            for key in ckp1.keys():    
+                k = len(key.split('&'))
+                count = True
+                #since I store the n-itemset patterns in one key, sperated by '&'
+                #need to split the patterns here, and count them by comparing with dataset
+                for i in range(k):
+                    #spilt different attributes
+                    #eg. get wrokclass:Private
+                    keysub = key.split('&')[i]
+                    dataIndex = Apriori.dataCol.index(keysub.split(':')[0])
+                    #the pattern only exists in data when it meets all subkeys, say 
+                    if data[dataIndex] == keysub.split(':')[1]:
+                        count = count & True
+                    else:
+                        count = count & False
+                #for length n pattern, this temp equals n meaning the pattern appear once
+                if count == True:                      
+                    ckp1[key] += 1    
         #prune ck
-        ckp1 = self.prune(ckp1)
-         
+        ckp1 = self.prune(ckp1)         
         return ckp1
-    #check subset 
+    
+    
+    #check subset
+    #ck length k candidate needs to be checked
+    #lkm1 length k-1 frequent items 
     def aprioriCk(self, ck, lkm1):
         k = 2
+        #generate a list containing items in l_k-1
+        temp = []
+        for lkm1Key in lkm1.keys():
+            temp.append(set(lkm1Key.split('&')))
         for key in ck.keys():
-            for valueSub in ck[key].keys():
-                #check all subsets
-                for i in range(k):
-                    tempSubSet = valueSub.split('&')
-                    tempSubSet.pop(i)
-                    subset = set(tempSubSet)
-                    #if subset not in l_{k-1}, we delete this candidate
-                    temp = []
-                    #generate set for l_k-1 keys 
-                    for lkm1SubKey in lkm1.keys():
-                        temp.append(set(lkm1SubKey.split('&')))
-                    if not (subset in temp):
-                        del ck[key][valueSub]
-                        #end loop check next candidate
-                        break
-                    #check next level
-                    #check l_k-1[key].keys()
-                    else:
-                        for lkm1SubSubKey in lkm1.values():
-                            lkm1SubSubKey.keys().split('&')
-                
-                
-        
-                
+            #check all subsets
+            for i in range(k):
+                C1KeySub = key.split('&')
+                C1KeySub.pop(i)
+                #get subSet of Ck
+                C1KeySub = set(C1KeySub)
+                #if subset not in l_{k-1}, delete this candidate          
+                if not (C1KeySub in temp):
+                    del ck[key]
+                    #end loop check next candidate
+                    break
+        return ck
             
         
         
-    
-ap = Apriori(adData, 2, 2)
+support = 6000  
+confidence = 2
+freqItem = []
+
+#intialize
+ap = Apriori(adData, support, confidence)
+#generate c1
 c1 = ap.c1Gen()
-l1 =ap.prune(c1)
+#prunue c1
+l1 = ap.prune(c1)
+freqItem.append(l1)
+# =============================================================================
+# #self join l1, generate c2
+# c2 = ap.selfJoin(l1)
+# #apriori check c2
+# c2 = ap.aprioriCk(c2, l1)
+# #count c2 and prine c2
+# l2 = ap.count(c2)
+# l2 = ap.prune(l2)
+# freqItem.append(l2)
+# =============================================================================
+# =============================================================================
+# while l2 != {}:
+#     c2 = ap.selfJoin(l2)
+#     c2 = ap.aprioriCk(c2, l2)
+#     l2 = ap.count(c2)
+#     l2 = ap.prune(l2)
+#     freqItem.append(l2)
+# =============================================================================
 
-c2=ap.selfJoin(l1)
-l2=ap.count(c2)
-      
+#l2beta=ap.aprioriCk(c2, l1)
+#l2=ap.count(l2beta,2)
+#c3=ap.selfJoin2(l2)
 
-l3=ap.selfJoin2(l2)
+#l3=ap.selfJoin2(l2)
 
 
