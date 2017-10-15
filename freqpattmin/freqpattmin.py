@@ -167,7 +167,7 @@ class Apriori:
                         break
         
         
-support = 500  
+support = 5  
 confidence = 0.7
 freqItem = []
 
@@ -204,21 +204,23 @@ APelapsed_time = time.time() - start_time
 #c3 = ap.aprioriCk(c3, l2)
 #c3 = ap.count(c3)
 
-for i in range(1):
-            for item in freqItem[-1-i]:
-                for j in range(len(item.split('&'))):
-                    items = item
-                    iteml_s = item
-                    items = items.split('&')
-                    del items[j]
-                    sorted(items)
-                    items = '&'.join(items)
-                    print items
-                    if items in freqItem[-1-i-1].keys():
-                        conf = freqItem[-1-i][item]/freqItem[-1-i-1][items]
-                       # if conf >= 0.5:
-                        print items + '>>>>' + iteml_s
-                        print conf
-                        #else:            
-                         #   break
-
+# =============================================================================
+# for i in range(1):
+#             for item in freqItem[-1-i]:
+#                 for j in range(len(item.split('&'))):
+#                     items = item
+#                     iteml_s = item
+#                     items = items.split('&')
+#                     del items[j]
+#                     sorted(items)
+#                     items = '&'.join(items)
+#                     print items
+#                     if items in freqItem[-1-i-1].keys():
+#                         conf = freqItem[-1-i][item]/freqItem[-1-i-1][items]
+#                        # if conf >= 0.5:
+#                         print items + '>>>>' + iteml_s
+#                         print conf
+#                         #else:            
+#                          #   break
+# 
+# =============================================================================
