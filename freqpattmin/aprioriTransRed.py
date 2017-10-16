@@ -1,3 +1,11 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Oct 15 17:47:50 2017
+
+@author: Xin
+"""
+
 # -*- coding: utf-8 -*-
 
 """Main module."""
@@ -110,7 +118,9 @@ class Apriori:
     
     def count(self, ckp1):
         #scan data row by row
-        for data in self.data:
+        RedcData = copy.deepcopy(self.data)
+        for tran in self.data:
+            tranRedc = True
             #genereate candidate ck set keys
             for key in ckp1.keys():    
                 k = len(key.split('&'))
@@ -127,13 +137,21 @@ class Apriori:
 #                     if data[dataIndex] == keysub.split(':')[1]:
 #                         count = count & True
 # =============================================================================
-                    if keysub in data:
+                    if keysub in tran:
                         count = count & True
                     else:
                         count = count & False
-                #for length n pattern, this temp equals n meaning the pattern appear once
-                if count == True:                      
-                    ckp1[key] += 1        
+                #all items match the transcation in database   
+                if count == True:   
+                    ckp1[key] += 1  
+                    #if any frequent item is found in this transcation, keep the data
+                    tranRedc = False
+            #apply transaction reduction here
+            #no frequent transcation found in this transcation, delete it
+            if tranRedc:              
+                RedcData.remove(tran)
+        
+        self.data =  copy.deepcopy(RedcData)
         return ckp1
     
     
@@ -178,25 +196,8 @@ class Apriori:
                             print conf
                 
         return assRul
-                
-# =============================================================================
-#                 
-#                 for j in range(len(item)):
-#                     
-#                     items = copy.deepcopy(item)
-#                     iteml_s = copy.deepcopy(item)
-#                     items = items.split('&')
-#                     iteml_s = iteml_s.split('&')
-#                     iteml_s = iteml_s[j]
-#                     del items[j]
-#                     conf = freqItem[-1-i][item]/freqItem[-1-i-1]['&'.join(sorted(items))]
-#                     if conf >= self.minConf:
-#                   #      print items, '>>>>', iteml_s
-#                         print conf
-#                     else:            
-#                         break
-# =============================================================================
-        
+
+
 def subSet(S, m):
     # note we return an iterator rather than a list
     return set(itertools.combinations(S, m))
@@ -229,7 +230,7 @@ while l2 != {}:
     l2 = ap.prune(l2)
     freqItem.append(l2)
 del freqItem[-1]
-
+# =============================================================================
 
 assRule = ap.assRule(freqItem)
 APelapsed_time = time.time() - start_time
