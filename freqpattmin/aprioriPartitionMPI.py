@@ -1,24 +1,31 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 16 21:26:27 2017
+
+@author: Xin
+"""
+
 # -*- coding: utf-8 -*-
 
 """Main module."""
-import numpy as np
-import pandas as pd
 import csv
 import time
-import copy
 import itertools
+import math
+from mpi4py import MPI
+
+
+#------------MPI setup---------
+comm = MPI.COMM_WORLD
+partition = comm.Get_size()
+rank = comm.Get_rank()
+
 
 #initialization class
 class Init:
     def __init__(self, filename):
         self.filename = filename
-    #read as pandas data frame
-    def DataPD(self):
-        data = pd.read_csv(self.filename, sep = ',', na_values = ".", header=None)
-        data.columns = (["age", "workclass", "fnlwgt", "education", "education-num", "martial-status",
-		"occupation", "relationship", "race", "sex", "capital-gain", "capital-loss",
-        	"hours-per-week", "country", "target"]) 
-        return data
     #read as list
     def DataList(self):
         data = []
@@ -33,8 +40,7 @@ class Init:
     
 		
 
-read = Init('adult.data')
-adData = read.DataList()
+
 #adData = [['cola', 'egg', 'ham'],['cola','diaper','beer'],['cola','diaper','beer','ham'],['diaper','beer']]
 
 class Apriori:
@@ -58,13 +64,13 @@ class Apriori:
             flag = 0 #mark colomun position
             for item in tran: #loop over all attributes in a transaction
                 #key = attibutes + value
-                keyCmb = Apriori.dataCol[flag]+':'+item
+                    keyCmb = Apriori.dataCol[flag]+':'+item            
                 #keyCmb = item
-                if keyCmb in c1.keys():
-                    c1[keyCmb] += 1
-                else:
-                    c1[keyCmb] = 1
-                flag += 1 #flag move forward
+                    if keyCmb in c1.keys():
+                        c1[keyCmb] += 1
+                    else:
+                        c1[keyCmb] = 1
+                    flag += 1 #flag move forward
         return c1
     
     #prune fucntion, generate l1 from c1
@@ -113,9 +119,7 @@ class Apriori:
     
     def count(self, ckp1):
         #scan data row by row
-        RedcData = copy.deepcopy(self.data)
         for data in self.data:
-            tranRedc = True
             #genereate candidate ck set keys
             for key in ckp1.keys():    
                 k = len(key.split('&'))
@@ -134,17 +138,10 @@ class Apriori:
                         count = count & False
                 #for length n pattern, this temp equals n meaning the pattern appear once
                 if count == True:                      
-                    ckp1[key] += 1    
-                    #if any frequent item is found in this transcation, keep the data
-                    tranRedc = False
-            #apply transaction reduction here
-            #no frequent transcation found in this transcation, delete it
-            if tranRedc:              
-                RedcData.remove(data)
-        self.data =  copy.deepcopy(RedcData)
+                    ckp1[key] += 1        
         return ckp1
-  
-  
+    
+    
     #check subset
     #ck length k candidate needs to be checked
     #lkm1 length k-1 frequent items 
@@ -182,28 +179,44 @@ class Apriori:
                             subSetKeyL_S = '&'.join(sorted(itemSet-set(itemS)))
                             assRul.append({'&'.join(sorted(itemS))+'>>>>'
                                            +subSetKeyL_S: conf})
-                            print '&'.join(sorted(itemS)), '>>>>', subSetKeyL_S
-                            print conf
+                            print '&'.join(sorted(itemS)), '>>>>', subSetKeyL_S 
+                            print  conf
                 
         return assRul
                 
-    #a function finding subset        
+    #function finding subset        
     def subSet(self, S, m):
         # note we return an iterator rather than a list
         return set(itertools.combinations(S, m))
-   
-support = 8000
-confidence = 0.5
-freqItem = []
+    #remove count
+    def rmCount(self, inDict):
+        inDict = {k :0 for k, v in inDict.items()}
+        return inDict
 
+
+start_time = time.time()   
+support = 6000
+confidence = 0.5
+
+freqItem = []
 #intialize
+
 start_time = time.time()
-ap = Apriori(adData, support, confidence)
+read = Init('adult.data')
+adData = read.DataList()
+locFreqItem = {}
+#finding freq items in partitions
+
+inc = int(math.ceil(len(adData)/float(partition)))
+localData = adData[rank*inc :  (rank+1)*inc]
+localSup = support * len(localData)/float(len(adData))
+ap = Apriori(localData, localSup, confidence)
 #generate c1
 c1 = ap.c1Gen()
 #prunue c1
 l1 = ap.prune(c1)
-freqItem.append(l1)
+locFreqItem = l1
+
 #self join l1, generate c2
 c2 = ap.selfJoin(l1)
 #apriori check c2
@@ -211,16 +224,46 @@ c2 = ap.aprioriCk(c2, l1)
 #count c2 and prune c2
 l2 = ap.count(c2)
 l2 = ap.prune(l2)
-freqItem.append(l2)
+locFreqItem.update(l2)
+
+
 
 while l2 != {}:
     c2 = ap.selfJoin2(l2)
     c2 = ap.aprioriCk(c2, l2)
     l2 = ap.count(c2)
-    l2 = ap.prune(l2)
-    freqItem.append(l2)
-del freqItem[-1]
+    l2 = ap.prune(l2) 
+    locFreqItem.update(l2)
 
 
+
+allFreqItem = comm.gather(locFreqItem)
+
+freqItemGa = comm.gather(locFreqItem, root=0)
+
+if rank == 0:
+    freqItemList = [None]*len(adData)
+    for tran in freqItemGa:
+        for k, v in tran.items():
+            index = len(k.split('&')) - 1
+            if freqItemList[index] == None:          
+                freqItemList[index]={k: v}
+            else:
+                freqItemList[index].update({k: v})
+    freqItemList = [i for i in freqItemList if i is not None]
+ 
+    #check freq item in global database
+    ap = Apriori(adData, support, confidence)
+    for item in freqItemList:
+        #remove unnecessary count from local database
+        item = ap.rmCount(item)
+        globItem = ap.count(item)
+        globItem = ap.prune(globItem)
+        freqItem.append(globItem)
+    freqItem = [i for i in freqItem if len(i) !=0]
 #assRule = ap.assRule(freqItem)
-APelapsed_time = time.time() - start_time
+    APelapsed_time = time.time() - start_time
+    print freqItem[0]
+    print freqItem[1]
+    print '\n'
+    print APelapsed_time

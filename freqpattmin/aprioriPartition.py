@@ -195,7 +195,7 @@ class Apriori:
 
 
 start_time = time.time()   
-support = 5
+support = 30
 confidence = 0.5
 #divel D into n partitions
 partition = 2
@@ -261,5 +261,5 @@ for item in locFreqItem:
     freqItem.append(globItem)
 del freqItem[-1]
 
-assRule = ap.assRule(freqItem)
+#assRule = ap.assRule(freqItem)
 APelapsed_time = time.time() - start_time

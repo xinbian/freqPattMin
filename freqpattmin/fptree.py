@@ -227,10 +227,12 @@ def freqFinder(fpTree, hdTable, freqItem, suffix, support):
     for k, v in freqItem.items():
         #assign frequent item set differnt index based its(key) length
         setLen = len(k.split('&')) - 1
+        tempKey = k.split('&')
+        tempKey ='&'.join(sorted(tempKey))
         if freqList[setLen] == None:
-             freqList[setLen] = {k: v}
+             freqList[setLen] = {tempKey: v}
         else:
-             freqList[setLen][k] = v
+             freqList[setLen][tempKey] = v
     return freqList
 
 start_time = time.time()
