@@ -1,11 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Oct 15 17:47:50 2017
-
-@author: Xin
-"""
-
 # -*- coding: utf-8 -*-
 
 """Main module."""
@@ -41,7 +33,7 @@ class Init:
 
 read = Init('adult.data')
 adData = read.DataList()
-adData = [['cola', 'egg', 'ham'],['cola','diaper','beer'],['cola','diaper','beer','ham'],['diaper','beer']]
+#adData = [['cola', 'egg', 'ham'],['cola','diaper','beer'],['cola','diaper','beer','ham'],['diaper','beer']]
 
 class Apriori:
     dataCol = ["age", "workclass", "fnlwgt", "education", "education-num", "martial-status",
@@ -57,14 +49,15 @@ class Apriori:
         #count as dict's value, data attibutes and value combination as key
         #for example{age:50 : 1} denotes age = 50, and count 1 
         c1 = {}
-        for attrib in Apriori.dataCol:
-            c1[attrib] = {}
+        #need delete
+       # for attrib in Apriori.dataCol:
+       #     c1[attrib] = {}
         for tran in self.data: #loop over all tranctions
             flag = 0 #mark colomun position
             for item in tran: #loop over all attributes in a transaction
                 #key = attibutes + value
-                #test keyCmb = Apriori.dataCol[flag]+':'+item
-                keyCmb = item
+                keyCmb = Apriori.dataCol[flag]+':'+item
+                #keyCmb = item
                 if keyCmb in c1.keys():
                     c1[keyCmb] += 1
                 else:
@@ -119,7 +112,7 @@ class Apriori:
     def count(self, ckp1):
         #scan data row by row
         RedcData = copy.deepcopy(self.data)
-        for tran in self.data:
+        for data in self.data:
             tranRedc = True
             #genereate candidate ck set keys
             for key in ckp1.keys():    
@@ -131,30 +124,25 @@ class Apriori:
                     #spilt different attributes
                     #eg. get wrokclass:Private
                     keysub = key.split('&')[i]
-# =============================================================================
-#                     dataIndex = Apriori.dataCol.index(keysub.split(':')[0])
-#                     #the pattern only exists in data when it meets all keys, say 
-#                     if data[dataIndex] == keysub.split(':')[1]:
-#                         count = count & True
-# =============================================================================
-                    if keysub in tran:
+                    dataIndex = Apriori.dataCol.index(keysub.split(':')[0])
+                    #the pattern only exists in data when it meets all keys, say 
+                    if data[dataIndex] == keysub.split(':')[1]:
                         count = count & True
                     else:
                         count = count & False
-                #all items match the transcation in database   
-                if count == True:   
-                    ckp1[key] += 1  
+                #for length n pattern, this temp equals n meaning the pattern appear once
+                if count == True:                      
+                    ckp1[key] += 1    
                     #if any frequent item is found in this transcation, keep the data
                     tranRedc = False
             #apply transaction reduction here
             #no frequent transcation found in this transcation, delete it
             if tranRedc:              
-                RedcData.remove(tran)
-        
+                RedcData.remove(data)
         self.data =  copy.deepcopy(RedcData)
         return ckp1
-    
-    
+  
+  
     #check subset
     #ck length k candidate needs to be checked
     #lkm1 length k-1 frequent items 
@@ -185,7 +173,7 @@ class Apriori:
                 #generate all nonempty subset 
                 for j in range(len(itemSet)-1, 0, -1):
                     #start from longest subset
-                    for itemS in subSet(itemSet, j):
+                    for itemS in self.subSet(itemSet, j):
                         subSetKey = '&'.join(sorted(itemS))
                         conf = freqItem[-1-i][item]/float(freqItem[j-1][subSetKey])
                         if conf >= self.minConf:
@@ -196,13 +184,13 @@ class Apriori:
                             print conf
                 
         return assRul
-
-
-def subSet(S, m):
-    # note we return an iterator rather than a list
-    return set(itertools.combinations(S, m))
+                
+    #a function finding subset        
+    def subSet(self, S, m):
+        # note we return an iterator rather than a list
+        return set(itertools.combinations(S, m))
    
-support = 2
+support = 5
 confidence = 0.5
 freqItem = []
 
@@ -230,7 +218,7 @@ while l2 != {}:
     l2 = ap.prune(l2)
     freqItem.append(l2)
 del freqItem[-1]
-# =============================================================================
 
-assRule = ap.assRule(freqItem)
+
+#assRule = ap.assRule(freqItem)
 APelapsed_time = time.time() - start_time

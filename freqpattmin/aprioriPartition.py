@@ -1,12 +1,19 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 16 21:26:27 2017
+
+@author: Xin
+"""
+
 # -*- coding: utf-8 -*-
 
 """Main module."""
-import numpy as np
 import pandas as pd
 import csv
 import time
-import copy
 import itertools
+import math
 
 #initialization class
 class Init:
@@ -31,8 +38,7 @@ class Init:
     
 		
 
-read = Init('adult.data')
-adData = read.DataList()
+
 #adData = [['cola', 'egg', 'ham'],['cola','diaper','beer'],['cola','diaper','beer','ham'],['diaper','beer']]
 
 class Apriori:
@@ -176,40 +182,82 @@ class Apriori:
                 
         return assRul
                 
-    #a function finding subset        
+    #function finding subset        
     def subSet(self, S, m):
         # note we return an iterator rather than a list
         return set(itertools.combinations(S, m))
-   
+    #remove count
+    def rmCount(self, inDict):
+        inDict = {k :0 for k, v in inDict.items()}
+        return inDict
+
+
+start_time = time.time()   
 support = 5
 confidence = 0.5
+#divel D into n partitions
+partition = 2
 freqItem = []
-
 #intialize
-start_time = time.time()
-ap = Apriori(adData, support, confidence)
-#generate c1
-c1 = ap.c1Gen()
-#prunue c1
-l1 = ap.prune(c1)
-freqItem.append(l1)
-#self join l1, generate c2
-c2 = ap.selfJoin(l1)
-#apriori check c2
-c2 = ap.aprioriCk(c2, l1)
-#count c2 and prune c2
-l2 = ap.count(c2)
-l2 = ap.prune(l2)
-freqItem.append(l2)
 
-while l2 != {}:
-    c2 = ap.selfJoin2(l2)
-    c2 = ap.aprioriCk(c2, l2)
+start_time = time.time()
+read = Init('adult.data')
+adData = read.DataList()
+locFreqItem = [None]*len(adData)
+#finding freq items in partitions
+
+for i in range(partition):
+    inc = int(math.ceil(len(adData)/float(partition)))
+    localData = adData[i*inc :  (i+1)*inc]
+    localSup = support * len(localData)/float(len(adData))
+    ap = Apriori(localData, localSup, confidence)
+    #generate c1
+    c1 = ap.c1Gen()
+    #prunue c1
+    l1 = ap.prune(c1)
+    #keep freqItem list structure clean, insert freqitem at proper list index
+    if locFreqItem[0] == None:
+        locFreqItem[0] = l1
+    else:
+        locFreqItem[0].update(l1)
+    #self join l1, generate c2
+    c2 = ap.selfJoin(l1)
+    #apriori check c2
+    c2 = ap.aprioriCk(c2, l1)
+    #count c2 and prune c2
     l2 = ap.count(c2)
     l2 = ap.prune(l2)
-    freqItem.append(l2)
-del freqItem[-1]
+    if locFreqItem[1] == None:
+        locFreqItem[1] = l2
+    else:
+        locFreqItem[1].update(l2)
 
+    flag = 2
+    while l2 != {}:
+        c2 = ap.selfJoin2(l2)
+        c2 = ap.aprioriCk(c2, l2)
+        l2 = ap.count(c2)
+        l2 = ap.prune(l2) 
+        if locFreqItem[flag] == None:
+            locFreqItem[flag] = l2
+        else:
+            locFreqItem[flag].update(l2)
+        flag += 1
+
+    
+locFreqItem = [i for i in locFreqItem if i is not None]
+del locFreqItem[-1]
+
+    
+#check freq item in global database
+ap = Apriori(adData, support, confidence)
+for item in locFreqItem:
+    #remove unnecessary count from local database
+    item = ap.rmCount(item)
+    globItem = ap.count(item)
+    globItem = ap.prune(globItem)
+    freqItem.append(globItem)
+del freqItem[-1]
 
 #assRule = ap.assRule(freqItem)
 APelapsed_time = time.time() - start_time

@@ -9,7 +9,6 @@ Created on Fri Oct 13 15:14:18 2017
 # -*- coding: utf-8 -*-
 
 """Main module."""
-import numpy as np
 import pandas as pd
 import csv
 import time
@@ -33,18 +32,29 @@ class Init:
             for row in csv.reader(f):
                 row = [col.strip() for col in row]
                 data.append(row)
+                
+        #rewrite data form as eg. workclass:State-gov
+        for tran in data: #
+            flag = 0 #mark colomun position                      
+            for i in range(len(tran)):
+                tran[i] = dataCol[flag]+ ':'+ tran[i] 
+                flag += 1
+                
 
+        adData = {}   
+        for tran in data:
+            #for tran in inData, add count for data :
+            if frozenset(tran) in adData.keys():
+                adData[frozenset(tran)] += 1
+            else:
+                adData[frozenset(tran)] = 1
     
-        return data
-   # def DataClean(self):
+        return adData
     
-		
 
-read = Init('adult.data')
-adData = read.DataList()
 
 class tree:
-        def __init__(self, parent, value, count = 1):
+        def __init__(self, parent, value, count):
             self.children = {}
             #node parent
             self.parent = parent
@@ -61,8 +71,7 @@ class tree:
             print "  " * ind, self.value, "  ",self.count
             for child in self.children.values():
                 child.disp(ind + 1)
-        
-    
+          
 
 dataCol = ["age", "workclass", "fnlwgt", "education", "education-num", "martial-status",
 		"occupation", "relationship", "race", "sex", "capital-gain", "capital-loss",
@@ -72,17 +81,18 @@ dataCol = ["age", "workclass", "fnlwgt", "education", "education-num", "martial-
 def genHeadTb(data, support):
     hdTable = {}
     for tran in data: #loop over all tranctions
-        flag = 0 #mark colomun position
         for item in tran: #loop over all attributes in a transaction
-            #key = attibutes:value, eg,  key = sex:male, value = 1          
-            keyCmb = dataCol[flag]+':'+item
-            #test case,not sused here, 
-            #keyCmb = item
+# =============================================================================
+#             # keyCmb = dataCol[flag]+':'+item
+             #key = attibutes:value, eg,  key = sex:male, value = 1          
+#             #test case,not used here, 
+# =============================================================================
+            keyCmb = item
             if keyCmb in hdTable.keys():
                 hdTable[keyCmb] += data[tran]
             else:
                 hdTable[keyCmb] = data[tran]
-            flag += 1 #flag move forward
+           # flag += 1 #flag move forward
     hdTable = {k: v for k , v in hdTable.items() if v >= support and v != {}}
     
     #a pointer in head table, pointing to tree node
@@ -100,23 +110,18 @@ def genHeadTb(data, support):
 
 def genTree(data, freqSet, hdTable):
     #generate root tree
-    rootTree = tree(None, 'root')
+    rootTree = tree(None, 'root', None)
     for tran in data: #loop over all tranctions
-        flag = 0 #mark colomun position
         tranDict = {}
-        count = data[tran]
-        
+        count = data[tran]       
         #if no frequent set, exit
         if freqSet == None:
             return None, None
+        
         for item in tran:
-            keyCmb = dataCol[flag]+':'+item
-            #test case, not used here
-            #keyCmb = item
-            if keyCmb in freqSet:
+            if item in freqSet:
                     #depends on dataset
-                    tranDict[keyCmb] = hdTable[keyCmb][0]
-            flag += 1
+                    tranDict[item] = hdTable[item][0]
         # sort transaction based on header table occuraence time
         # it should be noted that, should sort by value first then key, otherwise, 
         # there might be bugs. if only sort by key, 
@@ -128,9 +133,12 @@ def genTree(data, freqSet, hdTable):
         tranDict = sorted(tranDict.items(), key=lambda s: (s[1],s[0]), reverse=True)
         #insert each transction to the tree by a helper function
         #this part alogrithm implementation learned from open source code//
+        
         if tranDict == []:
             return None, None
+        
         treeHelper(tranDict, hdTable, rootTree, count)
+        
     return rootTree, hdTable
         
         
@@ -224,7 +232,7 @@ def freqFinder(fpTree, hdTable, freqItem, suffix, support):
              freqList[setLen][k] = v
     return freqList
 
-
+start_time = time.time()
 
 value=2     
 support = 5
@@ -243,6 +251,7 @@ print rootTree.disp()
 #ming FP tree, find frequent items 
 freqItem = freqFinder(rootTree, hdTable, {}, '', support)
 
+APelapsed_time = time.time() - start_time
 
 
 
