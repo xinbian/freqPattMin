@@ -33,14 +33,15 @@ class Init:
                 row = [col.strip() for col in row]
                 data.append(row)
                 
+        if data[-1] == []:
+            del data[-1]
         #rewrite data form as eg. workclass:State-gov
         for tran in data: #
             flag = 0 #mark colomun position                      
             for i in range(len(tran)):
                 tran[i] = dataCol[flag]+ ':'+ tran[i] 
                 flag += 1
-                
-
+   
         adData = {}   
         for tran in data:
             #for tran in inData, add count for data :

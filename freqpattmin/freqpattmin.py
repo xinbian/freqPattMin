@@ -26,6 +26,8 @@ class Init:
             for row in csv.reader(f):
                 row = [col.strip() for col in row]
                 data.append(row)
+        if data[-1] == []:
+            del data[-1]
         return data
    # def DataClean(self):
     
@@ -124,10 +126,12 @@ class Apriori:
                     keysub = key.split('&')[i]
                     dataIndex = Apriori.dataCol.index(keysub.split(':')[0])
                     #the pattern only exists in data when it meets all keys, say 
+                    
                     if data[dataIndex] == keysub.split(':')[1]:
                         count = count & True
                     else:
                         count = count & False
+                  
                 #for length n pattern, this temp equals n meaning the pattern appear once
                 if count == True:                      
                     ckp1[key] += 1        
@@ -181,8 +185,8 @@ class Apriori:
         # note we return an iterator rather than a list
         return set(itertools.combinations(S, m))
    
-support = 5
-confidence = 0.5
+support = 6000
+confidence = 0.75
 freqItem = []
 
 #intialize

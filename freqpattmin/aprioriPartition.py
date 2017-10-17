@@ -33,6 +33,8 @@ class Init:
             for row in csv.reader(f):
                 row = [col.strip() for col in row]
                 data.append(row)
+        if data[-1] == []:
+            del data[-1]
         return data
    # def DataClean(self):
     
@@ -259,5 +261,5 @@ for item in locFreqItem:
     freqItem.append(globItem)
 del freqItem[-1]
 
-#assRule = ap.assRule(freqItem)
+assRule = ap.assRule(freqItem)
 APelapsed_time = time.time() - start_time

@@ -26,6 +26,8 @@ class Init:
             for row in csv.reader(f):
                 row = [col.strip() for col in row]
                 data.append(row)
+        if data[-1] == []:
+            del data[-1]
         return data
    # def DataClean(self):
     
