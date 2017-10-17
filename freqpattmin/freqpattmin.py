@@ -7,6 +7,7 @@ import csv
 import time
 import copy
 import itertools
+import json
 
 #initialization class
 class Init:
@@ -185,7 +186,7 @@ class Apriori:
         # note we return an iterator rather than a list
         return set(itertools.combinations(S, m))
    
-support = 6000
+support = 20
 confidence = 0.75
 freqItem = []
 
@@ -214,6 +215,19 @@ while l2 != {}:
     freqItem.append(l2)
 del freqItem[-1]
 
+def output(filename, filename2, outRan = range(len(freqItem))):
+    for i in outRan:
+        temp = 'length ' + str(i+1) + ' item sets:' 
+        json.dump(temp, file(filename, 'a'), indent =0)
+        json.dump(freqItem[i], file(filename, 'a'), indent = 4)
+    for i in assRule:
+        json.dump(i, file(filename2, 'a'), indent = 0)
+output("fi.txt", "rule.txt")
 
-#assRule = ap.assRule(freqItem)
+
+
+
+
+
+assRule = ap.assRule(freqItem)
 APelapsed_time = time.time() - start_time
