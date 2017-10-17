@@ -48,4 +48,54 @@
     "capital-gain:0&capital-loss:0&target:<=50K":20,
     "capital-gain:0&capital-loss:0&country:United-States":22,
     "capital-gain:0&capital-loss:0&sex:Male":21
+}"length 1 item sets:"{
+    "capital-gain:0": 30, 
+    "target:<=50K": 23, 
+    "sex:Male": 25, 
+    "race:White": 21, 
+    "workclass:Private": 23, 
+    "capital-loss:0": 31, 
+    "country:United-States": 27
+}"length 2 item sets:"{
+    "capital-gain:0&country:United-States": 24, 
+    "country:United-States&race:White": 21, 
+    "country:United-States&target:<=50K": 20, 
+    "capital-gain:0&capital-loss:0": 28, 
+    "capital-loss:0&country:United-States": 25, 
+    "capital-gain:0&workclass:Private": 21, 
+    "country:United-States&sex:Male": 21, 
+    "capital-loss:0&workclass:Private": 21, 
+    "capital-gain:0&sex:Male": 23, 
+    "capital-loss:0&target:<=50K": 21, 
+    "capital-loss:0&sex:Male": 23, 
+    "capital-gain:0&target:<=50K": 22
+}"length 3 item sets:"{
+    "capital-gain:0&capital-loss:0&target:<=50K": 20, 
+    "capital-gain:0&capital-loss:0&country:United-States": 22, 
+    "capital-gain:0&capital-loss:0&sex:Male": 21
+}"length 1 item sets:"{
+    "capital-gain:0": 30, 
+    "target:<=50K": 23, 
+    "sex:Male": 25, 
+    "race:White": 21, 
+    "workclass:Private": 23, 
+    "capital-loss:0": 31, 
+    "country:United-States": 27
+}"length 2 item sets:"{
+    "capital-gain:0&country:United-States": 24, 
+    "country:United-States&race:White": 21, 
+    "country:United-States&target:<=50K": 20, 
+    "capital-gain:0&capital-loss:0": 28, 
+    "capital-loss:0&country:United-States": 25, 
+    "capital-gain:0&workclass:Private": 21, 
+    "country:United-States&sex:Male": 21, 
+    "capital-loss:0&workclass:Private": 21, 
+    "capital-gain:0&sex:Male": 23, 
+    "capital-loss:0&target:<=50K": 21, 
+    "capital-loss:0&sex:Male": 23, 
+    "capital-gain:0&target:<=50K": 22
+}"length 3 item sets:"{
+    "capital-gain:0&capital-loss:0&target:<=50K": 20, 
+    "capital-gain:0&capital-loss:0&country:United-States": 22, 
+    "capital-gain:0&capital-loss:0&sex:Male": 21
 }

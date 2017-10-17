@@ -32,12 +32,6 @@ class Init:
         return data
    # def DataClean(self):
     
-		
-
-read = Init('adult.data')
-adData = read.DataList()
-#adData = [['cola', 'egg', 'ham'],['cola','diaper','beer'],['cola','diaper','beer','ham'],['diaper','beer']]
-
 class Apriori:
     dataCol = ["age", "workclass", "fnlwgt", "education", "education-num", "martial-status",
 		"occupation", "relationship", "race", "sex", "capital-gain", "capital-loss",
@@ -185,14 +179,23 @@ class Apriori:
     def subSet(self, S, m):
         # note we return an iterator rather than a list
         return set(itertools.combinations(S, m))
-   
-support = 20
-confidence = 0.75
-freqItem = []
+    
+    
+    
+    
+start_time = time.time()   
 
 #intialize
-start_time = time.time()
+read = Init('adult.data')
+adData = read.DataList()
+confidence = 0.75
+minSup = 0.6  
+#calculate absoulte support  
+support = minSup * len(adData)
+
 ap = Apriori(adData, support, confidence)
+freqItem = []
+
 #generate c1
 c1 = ap.c1Gen()
 #prunue c1
@@ -215,6 +218,9 @@ while l2 != {}:
     freqItem.append(l2)
 del freqItem[-1]
 
+
+
+#assRule = ap.assRule(freqItem)
 def output(filename, filename2, outRan = range(len(freqItem))):
     for i in outRan:
         temp = 'length ' + str(i+1) + ' item sets:' 
@@ -222,12 +228,8 @@ def output(filename, filename2, outRan = range(len(freqItem))):
         json.dump(freqItem[i], file(filename, 'a'), indent = 4)
     for i in assRule:
         json.dump(i, file(filename2, 'a'), indent = 0)
-output("fi.txt", "rule.txt")
+#output("fi.txt", "rule.txt")
 
 
 
-
-
-
-assRule = ap.assRule(freqItem)
 APelapsed_time = time.time() - start_time
