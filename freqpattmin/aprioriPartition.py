@@ -39,8 +39,8 @@ class Init:
         return self.data
     
     #data cleaning: 
-    #1.partioning age data
-    #2. there are missing data in this dataset, which is alreday denoted by '?'
+    #1.partitioning age data
+    #2. there are missing data in this dataset, which is already denoted by '?'
     #since total missing data is very few, '?' won't form frequent items.
     #we can still use this method: global constant to fill in the missing value
     def DataClean(self):
@@ -77,10 +77,10 @@ class Apriori:
         #need delete
        # for attrib in Apriori.dataCol:
        #     c1[attrib] = {}
-        for tran in self.data: #loop over all tranctions
-            flag = 0 #mark colomun position
+        for tran in self.data: #loop over all transactions
+            flag = 0 #mark column position
             for item in tran: #loop over all attributes in a transaction
-                #key = attibutes + value
+                #key = attributes + value
                 keyCmb = Apriori.dataCol[flag]+':'+item
                 #keyCmb = item
                 if keyCmb in c1.keys():
@@ -141,10 +141,10 @@ class Apriori:
             for key in ckp1.keys():    
                 k = len(key.split('&'))
                 count = True
-                #since I store the n-itemset patterns in one key, sperated by '&'
+                #since I store the n-itemset patterns in one key, separated by '&'
                 #need to split the patterns here, and count them by comparing with dataset
                 for i in range(k):
-                    #spilt different attributes
+                    #split different attributes
                     #eg. get wrokclass:Private
                     keysub = key.split('&')[i]
                     dataIndex = Apriori.dataCol.index(keysub.split(':')[0])

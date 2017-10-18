@@ -34,8 +34,8 @@ class Init:
             flag = 0 #mark colomun position                      
             for i in range(len(tran)):
                 #data cleaning: 
-                #1. partioning age data
-                #2. there are missing data in this dataset, which is alreday denoted by '?'
+                #1. partitioning age data
+                #2. there are missing data in this dataset, which is already denoted by '?'
                 #since total missing data is very few, '?' won't form frequent items.
                 #we can still use this method: global constant to fill in the missing value
                 if i == 0:
@@ -55,7 +55,7 @@ class Init:
    
         adData = {}   
         for tran in data:
-            #for tran in inData, add frequenct/count/number for data :
+            #for tran in inData, add frequency/count/number for data :
             if frozenset(tran) in adData.keys():
                 adData[frozenset(tran)] += 1
             else:
@@ -88,7 +88,7 @@ dataCol = ["age", "workclass", "fnlwgt", "education", "education-num", "martial-
     
 def genHeadTb(data, support):
     hdTable = {}
-    for tran in data: #loop over all tranctions
+    for tran in data: #loop over all transactions
         for item in tran: #loop over all attributes in a transaction
             if item in hdTable.keys():
                 hdTable[item] += data[tran]
@@ -112,7 +112,7 @@ def genTree(data, freqSet, hdTable):
     #generate root tree
     rootTree = tree(None, 'root', None)
 
-    for tran in data: #loop over all tranctions
+    for tran in data: #loop over all transactions
         tranDict = {}
         num = data[tran]   
                 
@@ -120,13 +120,13 @@ def genTree(data, freqSet, hdTable):
             if item in freqSet:
                     #depends on dataset
                     tranDict[item] = hdTable[item][0]
-        # sort transaction based on header table occuraence time
+        # sort transaction based on header table occurrence time
         # note that, it should be sorted by value first then key, otherwise, 
         # there might be bugs. if only sorted by key, eg. the two trans are
         # {'beer', 'diaper', 'ham'}, {'beer', 'ham', 'diaper', 'cookie'}
         # with header table {beer:4, diaper:4, ham:4, cookie:2}
-        # this might generate a wrong FP tree, beer diaper ham might beinserted in the
-        # tree by differenrt order. 
+        # this might generate a wrong FP tree, beer diaper ham might be inserted in the
+        # tree by different order. 
         #tranDict is a sorted list now rather than dict
         tranDict = sorted(tranDict.items(), key=lambda s: (s[1],s[0]), reverse=True)
         
@@ -135,7 +135,7 @@ def genTree(data, freqSet, hdTable):
             return None, None
         
         #build tree recursively
-        #insert each transction to the tree by a helper function
+        #insert each transaction to the tree by a helper function
         treeHelper(tranDict, hdTable, rootTree, num)
         
     return rootTree, hdTable
@@ -154,7 +154,7 @@ def treeHelper(tranDict, hdTable, rootTree, num):
         rootTree.child[item]=tree(rootTree, item, num)    
         
         #hdTable[item][1] always points to the first shown node of the same item
-        #use head table pointer to create linked list in simmilar tree nodes
+        #use head table pointer to create linked list in similar tree nodes
         if hdTable[item][1] == None:
             #point to the fist show shown node
             hdTable[item][1] = rootTree.child[item]
@@ -162,7 +162,7 @@ def treeHelper(tranDict, hdTable, rootTree, num):
             #store original hdTable pointer in temp
             temp = hdTable[item][1]
             #find the last tree node in linked list (containing same item), 
-            #and point that tree node to the lastest tree node
+            #and point that tree node to the latest tree node
             while hdTable[item][1].next != None:              
                  hdTable[item][1] = hdTable[item][1].next
             #if hdTable[item][1].next == None, the current last element in linked list is found
@@ -185,7 +185,7 @@ def pathFinder(item, hdTable):
         #the conditional path support
         num = hdTableTemp[item][1].num
         
-        #down - top serach
+        #down - top search
         #loop until reach root node
         while hdTableTemp[item][1].parent.title != 'root':
             #add path 
@@ -196,7 +196,7 @@ def pathFinder(item, hdTable):
         #add path to allPath
         allPath[frozenset(path)] = num
         
-        #delete unnesccessary files
+        #delete unnecessary files
         if frozenset() in allPath.keys():
             del allPath[frozenset()]
                   
@@ -205,7 +205,7 @@ def pathFinder(item, hdTable):
     return allPath
 
 
-#find freqent item
+#find frequent item
 def freqFinder(fpTree, hdTable, freqItem, suffix, support):
     #freq item in header table
     item = []
@@ -221,7 +221,7 @@ def freqFinder(fpTree, hdTable, freqItem, suffix, support):
             prefix = prefix + '&' + element
         #store freq item sets
         freqItem[prefix] = hdTable[element][0]
-        #mine condtional tree recursively
+        #mine conditional tree recursively
         allPath = pathFinder(element, hdTable)
         hdTable2, freqSet = genHeadTb(allPath, support)
         condTree, hdTable2 = genTree(allPath, freqSet, hdTable2)
@@ -229,20 +229,20 @@ def freqFinder(fpTree, hdTable, freqItem, suffix, support):
             freqFinder(condTree, hdTable2, freqItem, prefix, support)
     
     # ======================================================================
-    # change frequent item set structre, for convenience of mining association rules.
+    # change frequent item set structure, for convenience of mining association rules.
     # put them in a list of dictionary,
-    # the same lenth item set has the the same index in the list
+    # the same length item set has the the same index in the list
     # ======================================================================
     #find maximum frequent item set length fist
     freqList = []
     maxLen = 0
     for item in freqItem.keys():
          maxLen = max(maxLen, len(item.split('&')))
-    #inilize frequent item set 'list'
+    #initialize frequent item set 'list'
     freqList = [None] * maxLen
 
     for k, v in freqItem.items():
-        #assign frequent item set differnt index based its key length
+        #assign frequent item set different index based its key length
         #key length
         setLen = len(k.split('&')) - 1
         tempKey = k.split('&')
@@ -295,13 +295,13 @@ adData = read.DataList()
 
 minSup = 0.6
 confidence = 0.8
-#calculate absoulte support  
+#calculate absolute support  
 support = minSup * len(adData)
 freqItem = []
 
 #first scan: generate header table
 hdTable, freqSet = genHeadTb(adData, support)
-#second scan: genereate FP tree
+#second scan: generate FP tree
 rootTree, hdTable = genTree(adData, freqSet, hdTable)
 
 #ming FP tree, find frequent items 

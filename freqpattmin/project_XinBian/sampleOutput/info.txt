@@ -1,3 +1,0 @@
-sample results.
-min_sup = 0.6
-min_confidence = 0.8

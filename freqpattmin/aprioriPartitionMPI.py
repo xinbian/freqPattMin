@@ -29,13 +29,7 @@ class Init:
     def __init__(self, filename):
         self.filename = filename
         self.data = []
-    #read as pandas data frame
-    def DataPD(self):
-        data = pd.read_csv(self.filename, sep = ',', na_values = ".", header=None)
-        data.columns = (["age", "workclass", "fnlwgt", "education", "education-num", "martial-status",
-		"occupation", "relationship", "race", "sex", "capital-gain", "capital-loss",
-        	"hours-per-week", "country", "target"]) 
-        return data
+
     #read as list
     def DataList(self):
         with open(self.filename, 'r') as f:
@@ -47,8 +41,8 @@ class Init:
         return self.data
     
     #data cleaning: 
-    #1.partioning age data
-    #2. there are missing data in this dataset, which is alreday denoted by '?'
+    #1. partitioning age data
+    #2. there are missing data in this dataset, which is already denoted by '?'
     #since total missing data is very few, '?' won't form frequent items.
     #we can still use this method: global constant to fill in the missing value
     def DataClean(self):
@@ -65,9 +59,6 @@ class Init:
         return self.data
     
 		
-
-
-#adData = [['cola', 'egg', 'ham'],['cola','diaper','beer'],['cola','diaper','beer','ham'],['diaper','beer']]
 
 class Apriori:
     dataCol = ["age", "workclass", "fnlwgt", "education", "education-num", "martial-status",
@@ -146,14 +137,14 @@ class Apriori:
     def count(self, ckp1):
         #scan data row by row
         for data in self.data:
-            #genereate candidate ck set keys
+            #generate candidate ck set keys
             for key in ckp1.keys():    
                 k = len(key.split('&'))
                 count = True
-                #since I store the n-itemset patterns in one key, sperated by '&'
+                #since I store the n-itemset patterns in one key, separated by '&'
                 #need to split the patterns here, and count them by comparing with dataset
                 for i in range(k):
-                    #spilt different attributes
+                    #split different attributes
                     #eg. get wrokclass:Private
                     keysub = key.split('&')[i]
                     dataIndex = Apriori.dataCol.index(keysub.split(':')[0])
@@ -224,14 +215,14 @@ start_time = time.time()
 
 
 freqItem = []
-#intialize
+#initialize
 read = Init('adult.data')
 adData = read.DataList()
 
 minSup = 0.6  
 confidence = 0.75
 
-#calculate absoulte support  
+#calculate absolute support  
 support = minSup * len(adData)
 
 locFreqItem = {}

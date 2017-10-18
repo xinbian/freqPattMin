@@ -30,8 +30,8 @@ class Init:
         return self.data
     
     #data cleaning: 
-    #1.partioning age data
-    #2. there are missing data in this dataset, which is alreday denoted by '?'
+    #1. partitioning age data
+    #2. there are missing data in this dataset, which is already denoted by '?'
     #since total missing data is very few, '?' won't form frequent items.
     #we can still use this method: global constant to fill in the missing value
     def DataClean(self):
@@ -58,13 +58,13 @@ class Apriori:
     #c1 and l1 generation
     def c1Gen(self):
         #store c1 in a dictionary
-        #count as dict's value, data attibutes and value combination as key
+        #count as dict's value, data attributes and value combination as key
         #for example{age:50 : 1} denotes age = 50, and count 1 
         c1 = {}
         #need delete
        # for attrib in Apriori.dataCol:
        #     c1[attrib] = {}
-        for tran in self.data: #loop over all tranctions
+        for tran in self.data: #loop over all transactions
             flag = 0 #mark colomun position
             for item in tran: #loop over all attributes in a transaction
                 #key = attibutes + value
@@ -128,10 +128,10 @@ class Apriori:
             for key in ckp1.keys():    
                 k = len(key.split('&'))
                 count = True
-                #since I store the n-itemset patterns in one key, sperated by '&'
+                #since I store the n-itemset patterns in one key, separated by '&'
                 #need to split the patterns here, and count them by comparing with dataset
                 for i in range(k):
-                    #spilt different attributes
+                    #split different attributes
                     #eg. get wrokclass:Private
                     keysub = key.split('&')[i]
                     dataIndex = Apriori.dataCol.index(keysub.split(':')[0])
@@ -200,14 +200,14 @@ class Apriori:
     
 start_time = time.time()   
 
-#intialize
+#initialize
 read = Init('adult.data')
 adData = read.DataList()
 adData = read.DataClean()
 
 minSup = 0.6
 confidence = 0.8
-#calculate absoulte support  
+#calculate absolute support  
 support = minSup * len(adData)
 
 ap = Apriori(adData, support, confidence)
@@ -215,7 +215,7 @@ freqItem = []
 
 #generate c1
 c1 = ap.c1Gen()
-#prunue c1
+#prune c1
 l1 = ap.prune(c1)
 freqItem.append(l1)
 #self join l1, generate c2
