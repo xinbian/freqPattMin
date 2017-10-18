@@ -1,0 +1,157 @@
+{
+"capital-gain:0&capital-loss:0&country:United-States>>>>race:White": 0.8727093206951027
+}{
+"capital-gain:0&country:United-States&race:White>>>>capital-loss:0": 0.9455689160854123
+}{
+"capital-gain:0&capital-loss:0&race:White>>>>country:United-States": 0.9183741324134491
+}{
+"capital-loss:0&country:United-States&race:White>>>>capital-gain:0": 0.9075116021191836
+}{
+"capital-gain:0&race:White>>>>capital-loss:0&country:United-States": 0.8697209430471917
+}{
+"country:United-States&race:White>>>>capital-gain:0&capital-loss:0": 0.8624565785878772
+}{
+"capital-loss:0&race:White>>>>capital-gain:0&country:United-States": 0.8347941065357007
+}{
+"capital-gain:0&country:United-States>>>>capital-loss:0&race:White": 0.8276339937825387
+}{
+"capital-gain:0&capital-loss:0&country:United-States>>>>target:<=50K": 0.8054502369668246
+}{
+"capital-loss:0&country:United-States&target:<=50K>>>>capital-gain:0": 0.9563423212192262
+}{
+"capital-gain:0&country:United-States&target:<=50K>>>>capital-loss:0": 0.9680083539016517
+}{
+"capital-gain:0&capital-loss:0&target:<=50K>>>>country:United-States": 0.8890535768778064
+}{
+"capital-loss:0&target:<=50K>>>>capital-gain:0&country:United-States": 0.8506715608575958
+}{
+"country:United-States&target:<=50K>>>>capital-gain:0&capital-loss:0": 0.9270421382790127
+}{
+"capital-gain:0&target:<=50K>>>>capital-loss:0&country:United-States": 0.861051298290057
+}{
+"target:<=50K>>>>capital-gain:0&capital-loss:0&country:United-States": 0.825
+}{
+"capital-loss:0&workclass:Private>>>>capital-gain:0": 0.9202357925762181
+}{
+"capital-gain:0&workclass:Private>>>>capital-loss:0": 0.9531577943140622
+}{
+"workclass:Private>>>>capital-gain:0&capital-loss:0": 0.8804194571730701
+}{
+"capital-loss:0&target:<=50K>>>>capital-gain:0": 0.9568282305831317
+}{
+"capital-gain:0&capital-loss:0>>>>target:<=50K": 0.8097070243558065
+}{
+"capital-gain:0&target:<=50K>>>>capital-loss:0": 0.9685032721131518
+}{
+"target:<=50K>>>>capital-gain:0&capital-loss:0": 0.9279530744336569
+}{
+"country:United-States&race:White>>>>capital-gain:0": 0.9121033527184731
+}{
+"capital-gain:0&race:White>>>>country:United-States": 0.9197858857795096
+}{
+"capital-gain:0&country:United-States>>>>race:White": 0.8752762275740664
+}{
+"country:United-States>>>>capital-gain:0&race:White": 0.8011312992800823
+}{
+"race:White>>>>capital-gain:0&country:United-States": 0.8401279838941617
+}{
+"country:United-States&target:<=50K>>>>capital-gain:0": 0.9576798945406609
+}{
+"capital-gain:0&target:<=50K>>>>country:United-States": 0.8895081275068609
+}{
+"target:<=50K>>>>capital-gain:0&country:United-States": 0.8522653721682848
+}{
+"race:White&target:<=50K>>>>capital-loss:0": 0.9690806319145853
+}{
+"capital-loss:0&target:<=50K>>>>race:White": 0.8366980895970635
+}{
+"target:<=50K>>>>capital-loss:0&race:White": 0.811448220064725
+}{
+"capital-loss:0&country:United-States>>>>capital-gain:0": 0.9110863229102947
+}{
+"capital-gain:0&capital-loss:0>>>>country:United-States": 0.8937522061418991
+}{
+"capital-gain:0&country:United-States>>>>capital-loss:0": 0.9483501254728641
+}{
+"country:United-States>>>>capital-gain:0&capital-loss:0": 0.8680150839904011
+}{
+"capital-gain:0>>>>capital-loss:0&country:United-States": 0.8482696237729908
+}{
+"capital-loss:0>>>>capital-gain:0&country:United-States": 0.8156690934862444
+}{
+"country:United-States&target:<=50K>>>>capital-loss:0": 0.9693622437383518
+}{
+"capital-loss:0&target:<=50K>>>>country:United-States": 0.8895052974055226
+}{
+"target:<=50K>>>>capital-loss:0&country:United-States": 0.8626618122977346
+}{
+"capital-gain:0&race:White>>>>capital-loss:0": 0.9470224741213051
+}{
+"capital-gain:0&capital-loss:0>>>>race:White": 0.8493116837274973
+}{
+"capital-loss:0&race:White>>>>capital-gain:0": 0.9089913109180204
+}{
+"capital-gain:0>>>>capital-loss:0&race:White": 0.8060906563033937
+}{
+"race:White>>>>capital-gain:0&capital-loss:0": 0.8650057520851309
+}{
+"country:United-States&race:White>>>>capital-loss:0": 0.950353225869404
+}{
+"capital-loss:0&race:White>>>>country:United-States": 0.9198715527011712
+}{
+"capital-loss:0&country:United-States>>>>race:White": 0.8761469540498723
+}{
+"country:United-States>>>>capital-loss:0&race:White": 0.8347274597188893
+}{
+"race:White>>>>capital-loss:0&country:United-States": 0.8753595053206787
+}{
+"race:White&target:<=50K>>>>capital-gain:0": 0.9566162616551525
+}{
+"capital-gain:0&target:<=50K>>>>race:White": 0.836014355077053
+}{
+"target:<=50K>>>>capital-gain:0&race:White": 0.8010113268608414
+}{
+"country:United-States>>>>race:White": 0.8783339046966061
+}{
+"race:White>>>>country:United-States": 0.9210885821110153
+}{
+"country:United-States>>>>capital-gain:0": 0.9152896811792938
+}{
+"capital-gain:0>>>>country:United-States": 0.894468826426346
+}{
+"target:<=50K>>>>country:United-States": 0.8899271844660194
+}{
+"capital-loss:0>>>>race:White": 0.8527156755363701
+}{
+"race:White>>>>capital-loss:0": 0.9516105838366408
+}{
+"capital-gain:0>>>>capital-loss:0": 0.9491105229655935
+}{
+"capital-loss:0>>>>capital-gain:0": 0.9126344952000516
+}{
+"country:United-States>>>>capital-loss:0": 0.9527254028111073
+}{
+"capital-loss:0>>>>country:United-States": 0.8952709232652535
+}{
+"workclass:Private>>>>capital-gain:0": 0.9236869933027846
+}{
+"age:mid-age>>>>capital-loss:0": 0.9555642175014617
+}{
+"workclass:Private>>>>country:United-States": 0.8871607331688404
+}{
+"workclass:Private>>>>capital-loss:0": 0.9567324638702855
+}{
+"sex:Male>>>>capital-gain:0": 0.9041303350160624
+}{
+"target:<=50K>>>>capital-loss:0": 0.969822006472492
+}{
+"capital-gain:0>>>>race:White": 0.8511842942812154
+}{
+"race:White>>>>capital-gain:0": 0.9133951682484901
+}{
+"target:<=50K>>>>race:White": 0.8373381877022654
+}{
+"sex:Male>>>>capital-loss:0": 0.9472234970169803
+}{
+"target:<=50K>>>>capital-gain:0": 0.9581310679611651
+}

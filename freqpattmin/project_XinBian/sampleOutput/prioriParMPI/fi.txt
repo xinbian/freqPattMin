@@ -1,0 +1,39 @@
+"length 1 item sets:"{
+    "race:White": 27816, 
+    "target:<=50K": 24720, 
+    "sex:Male": 21790, 
+    "capital-gain:0": 29849, 
+    "workclass:Private": 22696, 
+    "capital-loss:0": 31042, 
+    "country:United-States": 29170
+}"length 2 item sets:"{
+    "capital-gain:0&country:United-States": 26699, 
+    "country:United-States&race:White": 25621, 
+    "country:United-States&target:<=50K": 21999, 
+    "capital-loss:0&race:White": 26470, 
+    "capital-loss:0&country:United-States": 27791, 
+    "capital-gain:0&workclass:Private": 20964, 
+    "capital-gain:0&capital-loss:0": 28330, 
+    "country:United-States&workclass:Private": 20135, 
+    "capital-gain:0&race:White": 25407, 
+    "capital-loss:0&workclass:Private": 21714, 
+    "capital-gain:0&sex:Male": 19701, 
+    "capital-loss:0&target:<=50K": 23974, 
+    "race:White&target:<=50K": 20699, 
+    "capital-loss:0&sex:Male": 20640, 
+    "capital-gain:0&target:<=50K": 23685
+}"length 3 item sets:"{
+    "capital-gain:0&capital-loss:0&workclass:Private": 19982, 
+    "capital-gain:0&capital-loss:0&target:<=50K": 22939, 
+    "capital-gain:0&country:United-States&race:White": 23369, 
+    "capital-loss:0&race:White&target:<=50K": 20059, 
+    "capital-gain:0&capital-loss:0&country:United-States": 25320, 
+    "capital-loss:0&country:United-States&target:<=50K": 21325, 
+    "capital-gain:0&race:White&target:<=50K": 19801, 
+    "capital-gain:0&country:United-States&target:<=50K": 21068, 
+    "capital-loss:0&country:United-States&race:White": 24349, 
+    "capital-gain:0&capital-loss:0&race:White": 24061
+}"length 4 item sets:"{
+    "capital-gain:0&capital-loss:0&country:United-States&target:<=50K": 20394, 
+    "capital-gain:0&capital-loss:0&country:United-States&race:White": 22097
+}
